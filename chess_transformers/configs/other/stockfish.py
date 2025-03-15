@@ -1,3 +1,3 @@
 import os
 
-STOCKFISH_PATH = os.environ.get("CT_STOCKFISH_PATH")  # path to Stockfish engine
+STOCKFISH_PATH = "C:\\Program Files\\stockfish\\stockfish-windows-x86-64-avx2.exe" # path to Stockfish engine

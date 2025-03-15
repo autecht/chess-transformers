@@ -151,8 +151,8 @@ def model_move(
                 msg = "# {} plays ***{}***.".format(
                     model_name if model_name else "Model", board.move_stack[-1]
                 )
-            #display(Markdown(msg)) if in_notebook() else print_text(msg)
-            #display(board) if in_notebook() else print_board(board)
+            display(Markdown(msg)) if in_notebook() else print_text(msg)
+            display(board) if in_notebook() else print_board(board)
 
         return board
 
@@ -236,8 +236,8 @@ def engine_move(
             msg = "# {} plays {}.".format(
                 engine_name if engine_name else "Model", board.move_stack[-1]
             )
-        #display(Markdown(msg)) if in_notebook() else print_text(msg)
-        #display(board) if in_notebook() else print_board(board)
+        display(Markdown(msg)) if in_notebook() else print_text(msg)
+        display(board) if in_notebook() else print_board(board)
 
     return board
 

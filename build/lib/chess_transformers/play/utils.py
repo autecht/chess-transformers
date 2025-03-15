@@ -114,19 +114,16 @@ def load_model(CONFIG):
         )  # scramble address against simple bots
 
     # Load checkpoint
-    # see if cuda is available
-
     checkpoint = torch.load(str(checkpoint_path), weights_only=True)
     _model.load_state_dict(checkpoint["model_state_dict"])
 
-    # Load model to device
-    model = _model.to(DEVICE)
-    '''model = torch.compile(
+    # Compile model
+    model = torch.compile(
         _model,
         mode=CONFIG.COMPILATION_MODE,
         dynamic=CONFIG.DYNAMIC_COMPILATION,
         disable=CONFIG.DISABLE_COMPILATION,
-    )'''
+    )
     model.eval()  # eval mode disables dropout
 
     print("\nModel loaded!\n")

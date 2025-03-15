@@ -74,7 +74,6 @@ def model_v_engine(
 
         str: The rounds played in PGN format.
     """
-    print("running model v engine")
     # Set UCI options
     engine.configure(uci_options)
 
@@ -107,7 +106,7 @@ def model_v_engine(
                 if clock is not None:
                     clock.tap()
             except OutOfTime as exc:
-                #display(exc)
+                display(exc)
                 wins += 0
                 losses += 1
                 draws += 0
@@ -146,7 +145,7 @@ def model_v_engine(
                 if clock is not None:
                     clock.tap()
             except OutOfTime as exc:
-                #display(exc)
+                display(exc)
                 break
             if not board.is_game_over():
                 try:
@@ -173,14 +172,9 @@ def model_v_engine(
             if model_color != turn:
                 wins += 1
                 time_forfeit_result = "1-0" if model_color == "w" else "0-1"
-                # display the result
-                display(Markdown("# Time forfeit! {} wins!".format(model_name))) if in_notebook() else print_text("# Time forfeit! {} wins!".format(model_name))
             else:
                 losses += 1
                 time_forfeit_result = "0-1" if model_color == "w" else "1-0"
-                # display the result
-                display(Markdown("# Time forfeit! {} wins!".format(engine_name))) if in_notebook() else print_text("# Time forfeit! {} wins!".format(engine_name))
-                
         else:
             wins += (
                 int(board.result() == "1-0")
@@ -193,14 +187,6 @@ def model_v_engine(
                 else int(board.result() == "1-0")
             )
             draws += int(board.result() == "1/2-1/2")
-
-            # display the result
-            if board.result() == "1-0":
-                display(Markdown("# {} wins!".format(model_name))) if in_notebook() else print_text("# {} wins!".format(model_name))
-            elif board.result() == "0-1":
-                display(Markdown("# {} wins!".format(engine_name))) if in_notebook() else print_text("# {} wins!".format(engine_name))
-            else:
-                display(Markdown("# It's a draw!")) if in_notebook() else print_text("# It's a draw!")
 
         # PGN
         pgns.append(
