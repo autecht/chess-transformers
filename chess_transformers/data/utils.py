@@ -4,6 +4,28 @@ from collections import Counter
 
 from chess_transformers.data.levels import RANKS, FILES
 
+def getCarlsenColors(all_pgns):
+    
+    def filterColors(game):
+        filtered = [info for info in game if ("White " in info or "Black " in info)]
+        return filtered
+
+    all_pgns = all_pgns.split("\n\n")
+    pgn_metadata = [all_pgns[i] for i in range(0, len(all_pgns), 2)]
+    # pgn_moves = [all_pgns[i] for i in range(1, len(all_pgns), 2)]
+
+    pgn_metadata = [m.split("\n") for m in pgn_metadata]
+    pgn_colors = [filterColors(game) for game in pgn_metadata]
+    for game in pgn_colors:
+        if (len(game) < 2 or ("Carlsen, M" not in game[0] and "Carlsen, M" not in game[1])):
+            print(game)
+
+
+    pgn_colors = [x for xs in pgn_colors for x in xs]
+    magnus_colors = [color for color in pgn_colors if "Carlsen, M" in color]
+    magnus_colors = [(True if "White" in color else False) for color in magnus_colors]
+    return magnus_colors
+
 
 def replace_number(match):
     """
@@ -124,6 +146,7 @@ def parse_fen(fen):
     return turn, board, white_kingside, white_queenside, black_kingside, black_queenside
 
 def encode(item, vocabulary):
+    # print("Calling encode with item", item, "and vocab", vocabulary)
     """
     Encode an item with its index in the vocabulary its from.
 
