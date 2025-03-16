@@ -23,8 +23,8 @@ NAME = "CT-EFT-85"  # name and identifier for this configuration
 
 DATASET = ChessDatasetFT  # custom PyTorch dataset
 BATCH_SIZE = 512  # batch size
-NUM_WORKERS = 8  # number of workers to use for dataloading
-PREFETCH_FACTOR = 2  # number of batches to prefetch per worker
+NUM_WORKERS = 0  # number of workers to use for dataloading
+PREFETCH_FACTOR = None  # number of batches to prefetch per worker
 PIN_MEMORY = False  # pin to GPU memory when dataloading?
 
 ###############################
@@ -118,3 +118,18 @@ FINAL_CHECKPOINT_GDID = (
 EVAL_GAMES_FOLDER = str(
     pathlib.Path(__file__).parent.parent.parent.resolve() / "evaluate" / "games" / NAME
 )  # folder where evaluation games are saved in PGN files
+
+
+###############################
+############ Data #############
+###############################
+DATASET_NAME = "LE22ct"
+DATA_FOLDER = (
+    os.path.join(os.environ.get("CT_DATA_FOLDER"), DATASET_NAME)
+    if os.environ.get("CT_DATA_FOLDER")
+    else None
+)  # folder containing all data files
+H5_FILE = DATASET_NAME + ".h5"  # H5 file containing data
+MAX_MOVE_SEQUENCE_LENGTH = 10  # expected maximum length of move sequences
+EXPECTED_ROWS = 12500000  # expected number of rows, approximately, in the data
+VAL_SPLIT_FRACTION = 0.925  # marker (% into the data) where the validation split begins
