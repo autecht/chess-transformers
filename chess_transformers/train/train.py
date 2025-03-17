@@ -73,13 +73,18 @@ def train_model(CONFIG):
 
     # Load checkpoint if available
     if CONFIG.TRAINING_CHECKPOINT is not None:
+        print("Full Checkpoint Path", os.path.join(CONFIG.CHECKPOINT_FOLDER, CONFIG.TRAINING_CHECKPOINT))
         checkpoint = torch.load(
             os.path.join(CONFIG.CHECKPOINT_FOLDER, CONFIG.TRAINING_CHECKPOINT),
             weights_only=True,
         )
-        start_epoch = checkpoint["epoch"] + 1
+        start_epoch = checkpoint.get("epoch", 0) + 1
         model.load_state_dict(checkpoint["model_state_dict"])
-        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        model.load_state_dict(checkpoint["model_state_dict"])
+        if "optimizer_state_dict" in checkpoint:
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        else:
+            print("Optimizer state not found, restarting optimizer.")
         print("\nLoaded checkpoint from epoch %d.\n" % start_epoch)
     else:
         start_epoch = 0
