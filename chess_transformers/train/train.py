@@ -82,12 +82,13 @@ def train_model(CONFIG):
         start_epoch = 0
 
     # Compile model
-    compiled_model = torch.compile(
-        model,
-        mode=CONFIG.COMPILATION_MODE,
-        dynamic=CONFIG.DYNAMIC_COMPILATION,
-        disable=CONFIG.DISABLE_COMPILATION,
-    )
+    # compiled_model = torch.compile(
+    #     model,
+    #     mode=CONFIG.COMPILATION_MODE,
+    #     dynamic=CONFIG.DYNAMIC_COMPILATION,
+    #     disable=CONFIG.DISABLE_COMPILATION,
+    # )
+    compiled_model = model
 
     # Loss function
     criterion = CONFIG.CRITERION(

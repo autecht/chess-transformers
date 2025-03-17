@@ -4,6 +4,7 @@ import argparse
 import tables as tb
 from tqdm import tqdm
 
+from utils import *
 from chess_transformers.configs import import_config
 from chess_transformers.data.utils import encode, parse_fen
 from chess_transformers.data.levels import TURN, PIECES, SQUARES, UCI_MOVES, BOOL
@@ -121,15 +122,20 @@ def prepare_data(
         # Read moves and FENs in this chunk
         all_moves = open(os.path.join(data_folder, moves_files[i]), "r").read()
         all_fens = open(os.path.join(data_folder, fens_files[i]), "r").read()
+        all_pgns = open(os.path.join(data_folder, "1.pgn"), "r").read()
+        carlsenPlayedWhite = getCarlsenColors(all_pgns)
+        
+
         all_moves = all_moves.split("\n\n")[:-1]
         all_fens = all_fens.split("\n\n")[:-1]
         assert len(all_moves) == len(all_fens)
         print("There are %d games.\n" % len(all_moves))
-
+        print("There are %d colors.\n" % len(carlsenPlayedWhite))
         # Iterate through games in this chunk
         for j in tqdm(range(len(all_moves)), desc="Adding rows to table"):
             moves = all_moves[j].split("\n")
             result = moves.pop(-1)
+
             moves = [move.lower() for move in moves]
             moves.append("<loss>")  # like an EOS token
             fens = all_fens[j].split("\n")
@@ -139,21 +145,26 @@ def prepare_data(
                 n_move_fen_mismatches += 1
                 continue  # ignore this game
 
-            start_index = 0 if result == "1-0" else 1
-
+            win_index = 0 if result == "1-0" else 1
+            start_index = 0 if carlsenPlayedWhite[j] else 1
+            # start_index = win_index
             # Ignore this game if the wrong result is recorded in the source file
-            if len(moves) % 2 != start_index:
-                n_wrong_results += 1
-                continue
+            # if len(moves) % 2 != win_index: # don't care about result since we just want magnus' games
+            #     n_wrong_results += 1
+            #     continue
 
             # Iterate through moves in this game
             for k in range(start_index, len(moves), 2):
+                if len(moves[k : k + max_move_sequence_length]) <= 1:
+                    break
                 t, b, wk, wq, bk, bq = parse_fen(fens[k])
                 ms = (
                     ["<move>"]
                     + moves[k : k + max_move_sequence_length]
                     + ["<pad>"] * ((k + max_move_sequence_length) - len(moves))
                 )
+                # print(moves[k : k + max_move_sequence_length])
+                # print(f"move {k}, ms: {ms}")
                 msl = len([m for m in ms if m != "<pad>"]) - 1
 
                 # Board position
@@ -206,7 +217,9 @@ def prepare_data(
                 # Add row
                 row.append()
                 encoded_row.append()
-            new_game_index += k + 1
+            # for j in range(win_index, len(moves), 2):
+                
+            new_game_index += k + 1 if len(moves[k : k + max_move_sequence_length])>0 else k - 1
             new_game_indices.append(new_game_index)
 
         table.flush()
