@@ -32,6 +32,8 @@ class ChessDataset(Dataset):
             assert n_moves > 0
 
         # Open table in H5 file
+        print("Data:", data_folder)
+        print("h5:", h5_file)
         self.h5_file = tb.open_file(os.path.join(data_folder, h5_file), mode="r")
         self.encoded_table = self.h5_file.root.encoded_data
         self.split = split

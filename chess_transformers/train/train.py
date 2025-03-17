@@ -12,6 +12,9 @@ from torch.utils.tensorboard import SummaryWriter
 from chess_transformers.train.utils import *
 from chess_transformers.configs import import_config
 
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
+
 DEVICE = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )  # CPU isn't really practical here

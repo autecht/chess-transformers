@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 FAIRY_STOCKFISH_PATH = os.environ.get(
     "CT_FAIRY_STOCKFISH_PATH"

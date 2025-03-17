@@ -1,5 +1,8 @@
 import torch
 import pathlib
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from chess_transformers.train.utils import get_lr
 from chess_transformers.configs.data.LE22ct import *
@@ -23,8 +26,8 @@ NAME = "CT-E-20"  # name and identifier for this configuration
 
 DATASET = ChessDataset  # custom PyTorch dataset
 BATCH_SIZE = 512  # batch size
-NUM_WORKERS = 8  # number of workers to use for dataloading
-PREFETCH_FACTOR = 2  # number of batches to prefetch per worker
+NUM_WORKERS = 0  # number of workers to use for dataloading
+PREFETCH_FACTOR = None  # number of batches to prefetch per worker
 PIN_MEMORY = False  # pin to GPU memory when dataloading?
 
 ###############################
@@ -96,6 +99,7 @@ CHECKPOINT_FOLDER = str(
 TRAINING_CHECKPOINT = (
     None  # path to model checkpoint (NAME + ".pt") to resume training, None if none
 )
+AVERAGE_STEPS = {}
 CHECKPOINT_AVG_PREFIX = (
     "step"  # prefix to add to checkpoint name when saving checkpoints for averaging
 )
@@ -113,3 +117,18 @@ FINAL_CHECKPOINT = (
 EVAL_GAMES_FOLDER = str(
     pathlib.Path(__file__).parent.parent.parent.resolve() / "evaluate" / "games" / NAME
 )  # folder where evaluation games are saved in PGN files
+
+###############################
+############ Data #############
+###############################
+DATA_NAME = "Carlsen"
+DATA_FOLDER = (
+    os.path.join(os.environ.get("CT_DATA_FOLDER"), DATA_NAME)
+    if os.environ.get("CT_DATA_FOLDER")
+    else None
+)  # folder containing all data files
+print("Folder", DATA_FOLDER)
+H5_FILE = DATA_NAME + ".h5"  # H5 file containing data
+MAX_MOVE_SEQUENCE_LENGTH = 10  # expected maximum length of move sequences
+EXPECTED_ROWS = 125000000  # expected number of rows, approximately, in the data
+VAL_SPLIT_FRACTION = 0.98  # marker (% into the data) where the validation split begins
