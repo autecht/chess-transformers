@@ -123,7 +123,7 @@ EVAL_GAMES_FOLDER = str(
 ###############################
 ############ Data #############
 ###############################
-DATASET_NAME = "Carlsen"
+DATASET_NAME = "Carlsen_aug"
 DATA_FOLDER = (
     os.path.join(os.environ.get("CT_DATA_FOLDER"), DATASET_NAME)
     if os.environ.get("CT_DATA_FOLDER")
